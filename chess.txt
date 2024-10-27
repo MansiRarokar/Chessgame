@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Chess Game</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        .board {
+            display: grid;
+            grid-template-columns: repeat(8, 60px);
+            grid-template-rows: repeat(8, 60px);
+        }
+        .square {
+            width: 60px;
+            height: 60px;
+        }
+        .white {
+            background-color: #fff;
+        }
+        .black {
+            background-color: #888;
+        }
+        .piece {
+            font-size: 2em;
+            text-align: center;
+            line-height: 60px;
+        }
+    </style>
+</head>
+<body>
+    <div class="board" id="board"></div>
+    <script>
+        const boardElement = document.getElementById('board');
+        const pieces = {
+            r: '♖', n: '♘', b: '♗', q: '♕', k: '♔', p: '♙',
+            R: '♜', N: '♞', B: '♟', Q: '♛', K: '♚', P: '♟'
+        };
+        
+        const initialPosition = [
+            'rnbqkbnr',
+            'pppppppp',
+            '........',
+            '........',
+            '........',
+            '........',
+            'PPPPPPPP',
+            'RNBQKBNR'
+        ];
+
+        function createBoard() {
+            initialPosition.forEach((row, rowIndex) => {
+                [...row].forEach((piece, colIndex) => {
+                    const square = document.createElement('div');
+                    square.className = 'square ' + ((rowIndex + colIndex) % 2 === 0 ? 'white' : 'black');
+                    square.dataset.position = `${rowIndex},${colIndex}`;
+                    square.innerHTML = piece === '.' ? '' : pieces[piece];
+                    square.addEventListener('click', () => selectSquare(square));
+                    boardElement.appendChild(square);
+                });
+            });
+        }
+
+        let selectedSquare = null;
+
+        function selectSquare(square) {
+            if (selectedSquare) {
+                if (selectedSquare !== square) {
+                    movePiece(selectedSquare, square);
+                }
+                selectedSquare.classList.remove('selected');
+                selectedSquare = null;
+            } else {
+                selectedSquare = square;
+                selectedSquare.classList.add('selected');
+            }
+        }
+
+        function movePiece(fromSquare, toSquare) {
+            toSquare.innerHTML = fromSquare.innerHTML;
+            fromSquare.innerHTML = '';
+        }
+
+        createBoard();
+    </script>
+</body>
+</html>
